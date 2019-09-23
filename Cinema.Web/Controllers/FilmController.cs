@@ -71,6 +71,23 @@ namespace Cinema.Web.Controllers
         }
 
         /// <summary>
+        /// Get all films by name.
+        /// </summary>
+        /// <param name="filmName">Film name.</param>
+        /// <returns>All films by naame.</returns>
+        /// <response code="404">If films are not found.</response>
+        [HttpGet]
+        [ProducesResponseType(typeof(IActionResult), 200)]
+        [ProducesResponseType(404)]
+        [Route("name/{filmName}")]
+        public async Task<IActionResult> GetAllByName(string filmName)
+        {
+            var films = await _filmService.Find(FilmSpecification.Name(filmName).IsSatisfiedBy());
+
+            return Ok(films);
+        }
+
+        /// <summary>
         /// Add new film.
         /// </summary>
         /// <param name="filmModel">Film.</param>
