@@ -8,6 +8,8 @@ namespace Cinema.Persisted.Entities
 
         public int DurationTime { get; set; }
 
-        public ICollection<Ticket> Tickets { get; set; }
+        public virtual ICollection<Ticket> Tickets { get; set; }
+
+        public virtual ICollection<Session> Sessions { get; set; }
     }
 }

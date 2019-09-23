@@ -13,6 +13,7 @@ namespace Cinema.Persisted.Repositories
         private IPlaceRepository _placeRepository;
         private ITicketRepository _ticketRepository;
         private IVisitorRepository _visitorRepository;
+        private ISessionRepository _sessionRepository;
 
         public UnitOfWork(CinemaContext context)
         {
@@ -28,6 +29,8 @@ namespace Cinema.Persisted.Repositories
         public ITicketRepository TicketRepository => _ticketRepository ?? (_ticketRepository = new TicketRepository(_context));
 
         public IVisitorRepository VisitorRepository => _visitorRepository ?? (_visitorRepository = new VisitorRepository(_context));
+
+        public ISessionRepository SessionRepository => _sessionRepository ?? (_sessionRepository = new SessionRepository(_context));
 
         public async Task CommitAsync()
         {

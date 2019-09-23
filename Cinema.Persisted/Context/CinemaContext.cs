@@ -11,6 +11,7 @@ namespace Cinema.Persisted.Context
         public DbSet<Hall> Halls { get; set; }
         public DbSet<Visitor> Visitors { get; set; }
         public DbSet<Place> Places { get; set; }
+        public DbSet<Session> Sessions { get; set; }
 
         public CinemaContext(DbContextOptions options) : base(options)
         {
@@ -26,7 +27,7 @@ namespace Cinema.Persisted.Context
             modelBuilder.ApplyConfiguration(new HallConfiguration());
             modelBuilder.ApplyConfiguration(new VisitorConfiguration());
             modelBuilder.ApplyConfiguration(new PlaceConfiguration());
-
+            modelBuilder.ApplyConfiguration(new SessionConfiguration());
         }
     }
 

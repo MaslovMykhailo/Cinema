@@ -14,7 +14,7 @@ namespace Cinema.Persisted.Configurations
             builder
                 .HasOne(_ => _.Ticket)
                 .WithOne(_ => _.Visitor)
-                .IsRequired();
+                .HasForeignKey<Visitor>(_ => _.TicketId);
         }
     }
 }

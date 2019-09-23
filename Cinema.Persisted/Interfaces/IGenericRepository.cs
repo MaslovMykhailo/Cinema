@@ -1,6 +1,7 @@
 ﻿using Cinema.Persisted.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Cinema.Persisted.Interfaces
@@ -16,5 +17,7 @@ namespace Cinema.Persisted.Interfaces
         Task<bool> RemoveAsync(Guid id);
 
         Task<TEntity> UpdateAsync(Guid id, TEntity entity);
+
+        Task<List<TEntity>> Find(Expression<Func<TEntity, bool>> expression);
     }
 }

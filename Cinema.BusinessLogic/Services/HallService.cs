@@ -3,6 +3,7 @@ using Cinema.Persisted.Entities;
 using Cinema.Persisted.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Cinema.BusinessLogic.Services
@@ -22,6 +23,11 @@ namespace Cinema.BusinessLogic.Services
             await _unitOfWork.CommitAsync();
 
             return hall;
+        }
+
+        public async Task<List<Hall>> Find(Expression<Func<Hall, bool>> expression)
+        {
+            return await _unitOfWork.HallRepository.Find(expression);
         }
 
         public async Task<IEnumerable<Hall>> GetAllAsync()

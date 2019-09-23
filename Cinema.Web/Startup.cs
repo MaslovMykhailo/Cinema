@@ -1,8 +1,10 @@
-﻿using Cinema.BusinessLogic.Interfaces;
+﻿using AutoMapper;
+using Cinema.BusinessLogic.Interfaces;
 using Cinema.BusinessLogic.Services;
 using Cinema.Persisted.Context;
 using Cinema.Persisted.Interfaces;
 using Cinema.Persisted.Repositories;
+using Cinema.Web.Mapping;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,16 @@ namespace Cinema.Web
             services.AddScoped<IHallService, HallService>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MapperProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
 
             var connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<CinemaContext>(options =>

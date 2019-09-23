@@ -1,5 +1,7 @@
-﻿using Cinema.BusinessLogic.Interfaces;
+﻿using AutoMapper;
+using Cinema.BusinessLogic.Interfaces;
 using Cinema.Persisted.Entities;
+using Cinema.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -10,10 +12,12 @@ namespace Cinema.Web.Controllers
     public class PlaceController : Controller
     {
         private readonly IPlaceService _placeService;
+        private readonly IMapper _mapper;
 
-        public PlaceController(IPlaceService placeService)
+        public PlaceController(IPlaceService placeService, IMapper mapper)
         {
             _placeService = placeService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -51,15 +55,16 @@ namespace Cinema.Web.Controllers
         /// <summary>
         /// Add new place.
         /// </summary>
-        /// <param name="place">Place.</param>
+        /// <param name="placeModel">Place.</param>
         /// <returns>A newly created place.</returns>
         /// <response code="200">Returns the newly created place.</response>
         /// <response code="400">If request data is null.</response>
         [HttpPost]
         [ProducesResponseType(typeof(IActionResult), 200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Post(Place place)
+        public async Task<IActionResult> Post(PlaceModel placeModel)
         {
+            var place = _mapper.Map<Place>(placeModel);
             var createdPlace = await _placeService.AddAsync(place);
 
             return Ok(createdPlace);
@@ -78,8 +83,10 @@ namespace Cinema.Web.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [Route("{placeId}")]
-        public async Task<IActionResult> Put(Guid placeId, Place place)
+        public async Task<IActionResult> Put(Guid placeId, PlaceModel placeModel)
         {
+            var place = await _placeService.GetAsync(placeId);
+            _mapper.Map(placeModel, place);
             var updatedPlace = await _placeService.UpdateAsync(placeId, place);
             return Ok(updatedPlace);
         }
