@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Cinema.BusinessLogic.Interfaces;
 using Cinema.Persisted.Entities;
-using Microsoft.AspNetCore.Http;
+using Cinema.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace Cinema.Web.Controllers
 {
@@ -13,10 +12,12 @@ namespace Cinema.Web.Controllers
     public class VisitorController : Controller
     {
         private readonly IVisitorService _visitorService;
+        private readonly IMapper _mapper;
 
-        public VisitorController(IVisitorService visitorService)
+        public VisitorController(IVisitorService visitorService, IMapper mapper)
         {
             _visitorService = visitorService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -54,15 +55,16 @@ namespace Cinema.Web.Controllers
         /// <summary>
         /// Add new visitor.
         /// </summary>
-        /// <param name="ticket">Visitor.</param>
+        /// <param name="visitorModel">Visitor.</param>
         /// <returns>A newly created visitor.</returns>
         /// <response code="200">Returns the newly created visitor.</response>
         /// <response code="400">If request data is null.</response>
         [HttpPost]
         [ProducesResponseType(typeof(IActionResult), 200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Post(Visitor visitor)
+        public async Task<IActionResult> Post(VisitorModel visitorModel)
         {
+            var visitor = _mapper.Map<Visitor>(visitorModel);
             var createdTicket = await _visitorService.AddAsync(visitor);
 
             return Ok(createdTicket);
@@ -81,9 +83,12 @@ namespace Cinema.Web.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [Route("{visitorId}")]
-        public async Task<IActionResult> Put(Guid visitorId, Visitor visitor)
+        public async Task<IActionResult> Put(Guid visitorId, VisitorModel visitorModel)
         {
+            var visitor = await _visitorService.GetAsync(visitorId);
+            _mapper.Map(visitorModel, visitor);
             var updatedPlace = await _visitorService.UpdateAsync(visitorId, visitor);
+
             return Ok(updatedPlace);
         }
 

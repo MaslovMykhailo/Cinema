@@ -1,5 +1,7 @@
-﻿using Cinema.BusinessLogic.Interfaces;
+﻿using AutoMapper;
+using Cinema.BusinessLogic.Interfaces;
 using Cinema.Persisted.Entities;
+using Cinema.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -10,10 +12,12 @@ namespace Cinema.Web.Controllers
     public class HallController : Controller
     {
         private readonly IHallService _hallService;
+        private readonly IMapper _mapper;
 
-        public HallController(IHallService hallService)
+        public HallController(IHallService hallService, IMapper mapper)
         {
             _hallService = hallService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -51,15 +55,16 @@ namespace Cinema.Web.Controllers
         /// <summary>
         /// Add new hall.
         /// </summary>
-        /// <param name="hall">Hall.</param>
+        /// <param name="hallModel">Hall.</param>
         /// <returns>A newly created hall.</returns>
         /// <response code="200">Returns the newly created hall.</response>
         /// <response code="400">If request data is null.</response>
         [HttpPost]
         [ProducesResponseType(typeof(IActionResult), 200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Post(Hall hall)
+        public async Task<IActionResult> Post(HallModel hallModel)
         {
+            var hall = _mapper.Map<Hall>(hallModel);
             var createdHall = await _hallService.AddAsync(hall);
 
             return Ok(createdHall);
@@ -78,8 +83,10 @@ namespace Cinema.Web.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [Route("{hallId}")]
-        public async Task<IActionResult> Put(Guid hallId, Hall hall)
+        public async Task<IActionResult> Put(Guid hallId, HallModel hallModel)
         {
+            var hall = await _hallService.GetAsync(hallId);
+            _mapper.Map(hallModel, hall);
             var updatedHall = await _hallService.UpdateAsync(hallId, hall);
             return Ok(updatedHall);
         }

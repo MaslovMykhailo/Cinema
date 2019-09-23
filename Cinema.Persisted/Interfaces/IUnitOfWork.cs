@@ -14,6 +14,8 @@ namespace Cinema.Persisted.Interfaces
 
         IVisitorRepository VisitorRepository { get; }
 
+        ISessionRepository SessionRepository { get; }
+
         Task CommitAsync();
     }
 }

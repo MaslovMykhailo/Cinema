@@ -1,5 +1,8 @@
-﻿using Cinema.BusinessLogic.Interfaces;
+﻿using AutoMapper;
+using Cinema.BusinessLogic.Filtering;
+using Cinema.BusinessLogic.Interfaces;
 using Cinema.Persisted.Entities;
+using Cinema.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -10,10 +13,12 @@ namespace Cinema.Web.Controllers
     public class FilmController : Controller
     {
         private readonly IFilmService _filmService;
+        private readonly IMapper _mapper;
 
-        public FilmController(IFilmService filmService)
+        public FilmController(IFilmService filmService, IMapper mapper)
         {
             _filmService = filmService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -49,17 +54,35 @@ namespace Cinema.Web.Controllers
         }
 
         /// <summary>
+        /// Get all films by duration time.
+        /// </summary>
+        /// <param name="duration">Film duration time.</param>
+        /// <returns>All films by duration time.</returns>
+        /// <response code="404">If films are not found.</response>
+        [HttpGet]
+        [ProducesResponseType(typeof(IActionResult), 200)]
+        [ProducesResponseType(404)]
+        [Route("duration/{duration}")]
+        public async Task<IActionResult> GetAllByDurationTime(float duration)
+        {
+            var films = await _filmService.Find(FilmSpecification.Duration(duration).IsSatisfiedBy());
+
+            return Ok(films);
+        }
+
+        /// <summary>
         /// Add new film.
         /// </summary>
-        /// <param name="film">Film.</param>
+        /// <param name="filmModel">Film.</param>
         /// <returns>A newly created film.</returns>
         /// <response code="200">Returns the newly created film.</response>
         /// <response code="400">If request data is null.</response>
         [HttpPost]
         [ProducesResponseType(typeof(IActionResult), 200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Post(Film film)
+        public async Task<IActionResult> Post(FilmModel filmModel)
         {
+            var film = _mapper.Map<Film>(filmModel);
             var createdFilm = await _filmService.AddAsync(film);
 
             return Ok(createdFilm);
@@ -78,9 +101,12 @@ namespace Cinema.Web.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [Route("{filmId}")]
-        public async Task<IActionResult> Put(Guid filmId, Film film)
+        public async Task<IActionResult> Put(Guid filmId, FilmModel filmModel)
         {
+            var film = await _filmService.GetAsync(filmId);
+            _mapper.Map(filmModel, film);
             var updatedFilm = await _filmService.UpdateAsync(filmId, film);
+
             return Ok(updatedFilm);
         }
 
@@ -98,6 +124,7 @@ namespace Cinema.Web.Controllers
         public async Task<IActionResult> Delete(Guid filmId)
         {
             await _filmService.RemoveAsync(filmId);
+
             return NoContent();
         }
     }

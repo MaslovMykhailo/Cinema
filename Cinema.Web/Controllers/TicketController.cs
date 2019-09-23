@@ -1,5 +1,7 @@
-﻿using Cinema.BusinessLogic.Interfaces;
+﻿using AutoMapper;
+using Cinema.BusinessLogic.Interfaces;
 using Cinema.Persisted.Entities;
+using Cinema.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -10,10 +12,12 @@ namespace Cinema.Web.Controllers
     public class TicketController : Controller
     {
         private readonly ITicketService _ticketService;
+        private readonly IMapper _mapper;
 
-        public TicketController(ITicketService ticketService)
+        public TicketController(ITicketService ticketService, IMapper mapper)
         {
             _ticketService = ticketService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -58,8 +62,9 @@ namespace Cinema.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(IActionResult), 200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Post(Ticket ticket)
+        public async Task<IActionResult> Post(TicketModel ticketModel)
         {
+            var ticket = _mapper.Map<Ticket>(ticketModel);
             var createdTicket = await _ticketService.AddAsync(ticket);
 
             return Ok(createdTicket);
@@ -78,8 +83,10 @@ namespace Cinema.Web.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [Route("{ticketId}")]
-        public async Task<IActionResult> Put(Guid ticketId, Ticket ticket)
+        public async Task<IActionResult> Put(Guid ticketId, TicketModel ticketModel)
         {
+            var ticket = await _ticketService.GetAsync(ticketId);
+            _mapper.Map(ticketModel, ticket);
             var updatedPlace = await _ticketService.UpdateAsync(ticketId, ticket);
             return Ok(updatedPlace);
         }

@@ -11,5 +11,7 @@ namespace Cinema.Persisted.Entities
         public int RawCount { get; set; }
 
         public virtual ICollection<Place> Places { get; set; }
+
+        public virtual ICollection<Session> Sessions { get; set; }
     }
 }
