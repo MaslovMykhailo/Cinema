@@ -74,7 +74,7 @@ namespace Cinema.Web.Controllers
         /// Get all films by name.
         /// </summary>
         /// <param name="filmName">Film name.</param>
-        /// <returns>All films by naame.</returns>
+        /// <returns>All films by name.</returns>
         /// <response code="404">If films are not found.</response>
         [HttpGet]
         [ProducesResponseType(typeof(IActionResult), 200)]
@@ -83,6 +83,23 @@ namespace Cinema.Web.Controllers
         public async Task<IActionResult> GetAllByName(string filmName)
         {
             var films = await _filmService.Find(FilmSpecification.Name(filmName).IsSatisfiedBy());
+
+            return Ok(films);
+        }
+
+        /// <summary>
+        /// Get all films by filmmaker.
+        /// </summary>
+        /// <param name="filmmaker">Filmmaker.</param>
+        /// <returns>All films by filmmaker.</returns>
+        /// <response code="404">If films are not found.</response>
+        [HttpGet]
+        [ProducesResponseType(typeof(IActionResult), 200)]
+        [ProducesResponseType(404)]
+        [Route("filmmaker/{filmmaker}")]
+        public async Task<IActionResult> GetAllByFilmmaker(string filmmaker)
+        {
+            var films = await _filmService.Find(FilmSpecification.Filmmaker(filmmaker).IsSatisfiedBy());
 
             return Ok(films);
         }
@@ -99,6 +116,7 @@ namespace Cinema.Web.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Post(FilmModel filmModel)
         {
+
             var film = _mapper.Map<Film>(filmModel);
             var createdFilm = await _filmService.AddAsync(film);
 

@@ -40,7 +40,6 @@ namespace Cinema.Web
 
             services.AddScoped<IFilmService, FilmService>();
             services.AddScoped<IHallService, HallService>();
-
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
@@ -53,7 +52,7 @@ namespace Cinema.Web
             services.AddSingleton(mapper);
 
 
-            var connection = Configuration.GetConnectionString("LocalConnection");
+            var connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<CinemaContext>(options =>
                 options.UseSqlServer(connection));
 

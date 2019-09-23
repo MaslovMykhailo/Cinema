@@ -15,7 +15,6 @@ namespace Cinema.Persisted.Context
 
         public CinemaContext(DbContextOptions options) : base(options)
         {
-            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 

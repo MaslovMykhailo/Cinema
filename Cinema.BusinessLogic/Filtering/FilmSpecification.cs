@@ -13,5 +13,10 @@ namespace Cinema.BusinessLogic.Filtering
         {
             return new FilmByName(name);
         }
+
+        public static Specification<Film> Filmmaker(string filmmaker)
+        {
+            return new FilmByFilmmaker(filmmaker);
+        }
     }
 }
