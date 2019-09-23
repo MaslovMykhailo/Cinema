@@ -4,18 +4,18 @@ using System.Linq.Expressions;
 
 namespace Cinema.BusinessLogic.Filtering
 {
-    public class FilmsByDurationTime : Specification<Film>
+    public class FilmByName : Specification<Film>
     {
-        private readonly float _duration;
+        private readonly string _name;
 
-        public FilmsByDurationTime(float duration)
+        public FilmByName(string name)
         {
-            _duration = duration;
+            _name = name;
         }
 
         public override Expression<Func<Film, bool>> IsSatisfiedBy()
         {
-            return c => c.DurationTime == _duration;
+            return c => c.Name == _name;
         }
     }
 }

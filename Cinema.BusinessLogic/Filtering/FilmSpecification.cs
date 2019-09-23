@@ -8,5 +8,10 @@ namespace Cinema.BusinessLogic.Filtering
         {
             return new FilmsByDurationTime(duration);
         }
+
+        public static Specification<Film> Name(string name)
+        {
+            return new FilmByName(name);
+        }
     }
 }
