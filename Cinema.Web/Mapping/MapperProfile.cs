@@ -6,7 +6,8 @@ namespace Cinema.Web.Mapping
 {
     public class MapperProfile : Profile
     {
-        public MapperProfile()
+        private static MapperProfile instance;
+        private MapperProfile()
         {
             CreateMap<FilmModel, Film>();
             CreateMap<HallModel, Hall>();
@@ -14,6 +15,13 @@ namespace Cinema.Web.Mapping
             CreateMap<SessionModel, Session>();
             CreateMap<VisitorModel, Visitor>();
             CreateMap<PlaceModel, Place>();
+        }
+
+        public static MapperProfile getInstance() {
+            if (instance == null) {
+                instance = new MapperProfile();
+            }
+            return instance;
         }
     }
 
