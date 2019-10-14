@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Cinema.BusinessLogic.Interfaces;
+using Cinema.BusinessLogic.Searching;
 using Cinema.Persisted.Entities;
 using Cinema.Web.Models;
-using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Cinema.BusinessLogic.Searching;
 
 namespace Cinema.Web.Controllers
 {
