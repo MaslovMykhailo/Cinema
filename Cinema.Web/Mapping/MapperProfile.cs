@@ -15,6 +15,10 @@ namespace Cinema.Web.Mapping
             CreateMap<SessionModel, Session>();
             CreateMap<VisitorModel, Visitor>();
             CreateMap<PlaceModel, Place>();
+
+            CreateMap<Ticket, FilteredTicket>()
+                .ForMember(_ => _.Film, opt => opt.MapFrom(src => src.Film))
+                .ForMember(_ => _.PlaceNumber, opt => opt.MapFrom(src => src.Place.Number));
         }
 
         public static MapperProfile getInstance() {
