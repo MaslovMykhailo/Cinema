@@ -64,7 +64,7 @@ namespace Cinema.Web
 
             var mappingConfig = new MapperConfiguration(mc =>
             {
-                mc.AddProfile(new MapperProfile());
+                mc.AddProfile(MapperProfile.getInstance());
             });
 
             IMapper mapper = mappingConfig.CreateMapper();
