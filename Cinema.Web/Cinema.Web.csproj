@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cinema.BusinessLogic\Cinema.BusinessLogic.csproj" />
+    <ProjectReference Include="..\Cinema.CinemaSearcher.Client\Cinema.CinemaSearcher.Client.csproj" />
   </ItemGroup>
 
 </Project>

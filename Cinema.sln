@@ -1,15 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29123.88
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cinema.Persisted", "Cinema.Persisted\Cinema.Persisted.csproj", "{092A206B-FA44-42AC-9452-507F05A166AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cinema.Persisted", "Cinema.Persisted\Cinema.Persisted.csproj", "{092A206B-FA44-42AC-9452-507F05A166AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cinema.Web", "Cinema.Web\Cinema.Web.csproj", "{E73BF99F-8066-444C-8603-8FB2404CF999}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cinema.Web", "Cinema.Web\Cinema.Web.csproj", "{E73BF99F-8066-444C-8603-8FB2404CF999}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{153E78ED-FED7-4E99-A76D-4524AABDD844}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cinema.BusinessLogic", "Cinema.BusinessLogic\Cinema.BusinessLogic.csproj", "{828662CC-B62D-42EC-A85A-BA9C040DD5A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cinema.BusinessLogic", "Cinema.BusinessLogic\Cinema.BusinessLogic.csproj", "{828662CC-B62D-42EC-A85A-BA9C040DD5A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cinema.CinemaSearcher.Client", "Cinema.CinemaSearcher.Client\Cinema.CinemaSearcher.Client.csproj", "{5F9C288A-9ED9-4B38-B29E-D4EFC024EE5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{828662CC-B62D-42EC-A85A-BA9C040DD5A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{828662CC-B62D-42EC-A85A-BA9C040DD5A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{828662CC-B62D-42EC-A85A-BA9C040DD5A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F9C288A-9ED9-4B38-B29E-D4EFC024EE5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F9C288A-9ED9-4B38-B29E-D4EFC024EE5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F9C288A-9ED9-4B38-B29E-D4EFC024EE5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F9C288A-9ED9-4B38-B29E-D4EFC024EE5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +43,7 @@ Global
 		{092A206B-FA44-42AC-9452-507F05A166AF} = {153E78ED-FED7-4E99-A76D-4524AABDD844}
 		{E73BF99F-8066-444C-8603-8FB2404CF999} = {153E78ED-FED7-4E99-A76D-4524AABDD844}
 		{828662CC-B62D-42EC-A85A-BA9C040DD5A7} = {153E78ED-FED7-4E99-A76D-4524AABDD844}
+		{5F9C288A-9ED9-4B38-B29E-D4EFC024EE5E} = {153E78ED-FED7-4E99-A76D-4524AABDD844}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B31F7AD1-F193-4A5F-9711-A9FDF141FD34}

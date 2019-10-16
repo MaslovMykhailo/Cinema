@@ -10,7 +10,7 @@ namespace Cinema.Web.Mapping
         {
             CreateMap<FilmModel, Film>();
             CreateMap<HallModel, Hall>();
-            CreateMap<TicketModel, Ticket>();
+            CreateMap<TicketModel, Ticket>().ReverseMap();
             CreateMap<SessionModel, Session>();
             CreateMap<VisitorModel, Visitor>();
             CreateMap<PlaceModel, Place>();

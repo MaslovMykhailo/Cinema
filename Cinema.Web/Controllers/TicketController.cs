@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Cinema.BusinessLogic.Interfaces;
 using Cinema.BusinessLogic.Searching;
+using Cinema.CinemaSearcher.Client;
 using Cinema.Persisted.Entities;
 using Cinema.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Cinema.Web.Controllers
@@ -13,13 +15,17 @@ namespace Cinema.Web.Controllers
     [Route("api/ticket")]
     public class TicketController : Controller
     {
-        private readonly ITicketService _ticketService;
+        private readonly BusinessLogic.Interfaces.ITicketService _ticketService;
         private readonly IMapper _mapper;
+        private readonly IHttpClientFactory _clientFactory;
+        private readonly ICinemaSearcherClient _cinemaSearcherClient;
 
-        public TicketController(ITicketService ticketService, IMapper mapper)
+        public TicketController(BusinessLogic.Interfaces.ITicketService ticketService, IMapper mapper, IHttpClientFactory clientFactory, ICinemaSearcherClient cinemaSearcherClient)
         {
             _ticketService = ticketService;
             _mapper = mapper;
+            _clientFactory = clientFactory;
+            _cinemaSearcherClient = cinemaSearcherClient;
         }
 
         /// <summary>
@@ -77,15 +83,13 @@ namespace Cinema.Web.Controllers
         /// <returns>All tickets by search query.</returns>
         /// <response code="404">If tickets are not found.</response>
         [HttpGet]
-        [Route("/search")]
+        [Route("/api/ticket/search")]
         [ProducesResponseType(typeof(IActionResult), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetAllBySearchQuery([FromQuery] TicketSearchModel ticketSearchModel)
         {
-            TicketSearchBuilder ticketSearchBuilder = new TicketSearchBuilder(ticketSearchModel);
-            var tickets = await _ticketService.Find(ticketSearchBuilder.Build());
-
-            return Ok(tickets);
+            IEnumerable<Ticket> tickets = await _cinemaSearcherClient.GetBySearchQuery(Request.QueryString);
+            return Ok(_mapper.Map<List<TicketModel>>(tickets));
         }
 
         /// <summary>
