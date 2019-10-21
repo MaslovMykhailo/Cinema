@@ -6,7 +6,8 @@ namespace Cinema.Web.Mapping
 {
     public class MapperProfile : Profile
     {
-        public MapperProfile()
+        private static MapperProfile instance;
+        private MapperProfile()
         {
             CreateMap<FilmModel, Film>().ReverseMap();
             CreateMap<HallModel, Hall>();
@@ -18,6 +19,13 @@ namespace Cinema.Web.Mapping
             CreateMap<Ticket, FilteredTicket>()
                 .ForMember(_ => _.Film, opt => opt.MapFrom(src => src.Film))
                 .ForMember(_ => _.PlaceNumber, opt => opt.MapFrom(src => src.Place.Number));
+        }
+
+        public static MapperProfile getInstance() {
+            if (instance == null) {
+                instance = new MapperProfile();
+            }
+            return instance;
         }
     }
 

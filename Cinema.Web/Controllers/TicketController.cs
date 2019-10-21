@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Cinema.BusinessLogic.Interfaces;
 using Cinema.CinemaSearcher.Client;
 using Cinema.Persisted.Entities;
 using Cinema.Web.Models;
@@ -13,12 +14,12 @@ namespace Cinema.Web.Controllers
     [Route("api/ticket")]
     public class TicketController : Controller
     {
-        private readonly BusinessLogic.Interfaces.ITicketService _ticketService;
+        private readonly ITicketService _ticketService;
         private readonly IMapper _mapper;
         private readonly IHttpClientFactory _clientFactory;
         private readonly ICinemaSearcherClient _cinemaSearcherClient;
 
-        public TicketController(BusinessLogic.Interfaces.ITicketService ticketService, IMapper mapper, IHttpClientFactory clientFactory, ICinemaSearcherClient cinemaSearcherClient)
+        public TicketController(ITicketService ticketService, IMapper mapper, IHttpClientFactory clientFactory, ICinemaSearcherClient cinemaSearcherClient)
         {
             _ticketService = ticketService;
             _mapper = mapper;
