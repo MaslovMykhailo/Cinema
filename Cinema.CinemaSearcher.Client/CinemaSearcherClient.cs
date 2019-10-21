@@ -1,39 +1,48 @@
-﻿using Cinema.BusinessLogic.Searching;
-using Cinema.Persisted.Entities;
+﻿using Cinema.Persisted.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace Cinema.CinemaSearcher.Client
 {
     public class CinemaSearcherClient : ICinemaSearcherClient
     {
-        private readonly ITicketService _ticketService;
+        public HttpClient Client { get; set; }
 
-        public IEnumerable<Ticket> Tickets { get; private set; }
-
-        public bool GetIssuesError { get; private set; }
-
-        public CinemaSearcherClient(ITicketService ticketService)
+        public CinemaSearcherClient()
         {
-            _ticketService = ticketService;
+            Client = new HttpClient();
+            Client.BaseAddress = new Uri("https://localhost:44377/");
+            Client.DefaultRequestHeaders.Add("Accept", "application/json");
+            Client.DefaultRequestHeaders.Add("User-Agent", "HttpClientFactory-Sample");
         }
 
-        public async Task<IEnumerable<Ticket>> GetBySearchQuery(QueryString queryString)
+        public async Task<IEnumerable<T>> GetAsync<T>()
         {
-            try
-            {
-                Tickets = await _ticketService.GetBySearchQuery(queryString);
-            }
-            catch (HttpRequestException)
-            {
-                GetIssuesError = true;
-                Tickets = Array.Empty<Ticket>();
-            }
+            var response = await Client.GetAsync("api/film");
 
-            return Tickets;
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content
+                .ReadAsAsync<IEnumerable<T>>();
+
+            return result;
+        }
+
+        public async Task<IEnumerable<T>> GetBySearchQueryAsync<T>(QueryString queryString)
+        {
+            UriBuilder builder = new UriBuilder(String.Format("https://localhost:44377/api/film/search"));
+            builder.Query = queryString.ToString();
+            var response = await Client.GetAsync(builder.Uri);
+
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content
+                .ReadAsAsync<IEnumerable<T>>();
+
+            return result;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Cinema.Web.Mapping
     {
         public MapperProfile()
         {
-            CreateMap<FilmModel, Film>();
+            CreateMap<FilmModel, Film>().ReverseMap();
             CreateMap<HallModel, Hall>();
             CreateMap<TicketModel, Ticket>().ReverseMap();
             CreateMap<SessionModel, Session>();

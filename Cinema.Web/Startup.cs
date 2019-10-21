@@ -49,15 +49,7 @@ namespace Cinema.Web
             services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            services.AddHttpClient<CinemaSearcher.Client.ITicketService>(client =>
-            {
-                client.BaseAddress = new Uri("https://localhost:44377/");
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
-                client.DefaultRequestHeaders.Add("User-Agent", "HttpClientFactory-Sample");
-            });
-
-            services.AddScoped<CinemaSearcher.Client.ITicketService, CinemaSearcher.Client.TicketService>();
+            
             services.AddScoped<ICinemaSearcherClient, CinemaSearcherClient>();
 
 
