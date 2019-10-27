@@ -1,21 +1,20 @@
 ﻿using AutoMapper;
-using Cinema.BusinessLogic.Filtering;
 using Cinema.BusinessLogic.Interfaces;
 using Cinema.Persisted.Entities;
 using Cinema.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using Cinema.CinemaSearcher.Client;
 using System.Collections.Generic;
+using CinemaSearcher;
 
 namespace Cinema.Web.Controllers
 {
     [Route("api/film")]
     public class FilmController : Controller
     {
-        private readonly ICinemaSearcherClient _client;
         private readonly IMapper _mapper;
+        private readonly ICinemaSearcherClient _client;
 
         public FilmController(IFilmService filmService, IMapper mapper, ICinemaSearcherClient client)
         {
@@ -49,7 +48,7 @@ namespace Cinema.Web.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetAllBySearchQuery([FromQuery] FilmSearchModel filmModel)
         {
-            IEnumerable<Film> films = await _client.GetBySearchQueryAsync<Film>(Request.QueryString);
+            IEnumerable<Film> films = await _client.GetBySearchQueryAsync<Film>(filmModel);
             return Ok(_mapper.Map<List<FilmModel>>(films));
         }
     }

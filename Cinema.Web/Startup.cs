@@ -12,9 +12,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
-using Cinema.CinemaSearcher.Client;
 using ITicketService = Cinema.BusinessLogic.Interfaces.ITicketService;
 using TicketService = Cinema.BusinessLogic.Services.TicketService;
+using CinemaSearcher;
 
 namespace Cinema.Web
 {
@@ -49,9 +49,14 @@ namespace Cinema.Web
             services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            
-            services.AddScoped<ICinemaSearcherClient, CinemaSearcherClient>();
 
+
+            services.AddHttpClient("search", c =>
+            {
+                c.BaseAddress = new Uri("https://localhost:44377/");
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            })
+            .AddTypedClient(c => Refit.RestService.For<ICinemaSearcherClient>(c));
 
 
             var mappingConfig = new MapperConfiguration(mc =>
