@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Cinema.BusinessLogic.Interfaces;
-using Cinema.BusinessLogic.Searching;
 using Cinema.Persisted.Entities;
 using Cinema.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Cinema.Web.Controllers
@@ -69,23 +69,6 @@ namespace Cinema.Web.Controllers
             var filteredTickets = _mapper.Map<IEnumerable<Ticket>, List<FilteredTicket>>(tickets);
 
             return Ok(filteredTickets);
-        }
-
-        /// <summary>
-        /// Get all tickets by search query.
-        /// </summary>
-        /// <returns>All tickets by search query.</returns>
-        /// <response code="404">If tickets are not found.</response>
-        [HttpGet]
-        [Route("/search")]
-        [ProducesResponseType(typeof(IActionResult), 200)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> GetAllBySearchQuery([FromQuery] TicketSearchModel ticketSearchModel)
-        {
-            TicketSearchBuilder ticketSearchBuilder = new TicketSearchBuilder(ticketSearchModel);
-            var tickets = await _ticketService.Find(ticketSearchBuilder.Build());
-
-            return Ok(tickets);
         }
 
         /// <summary>

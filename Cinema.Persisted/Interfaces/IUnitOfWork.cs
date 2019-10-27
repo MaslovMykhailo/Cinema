@@ -2,20 +2,20 @@
 
 namespace Cinema.Persisted.Interfaces
 {
-    public interface IUnitOfWork
-    {
-        IFilmRepository FilmRepository { get; }
+        public interface IUnitOfWork
+        {
+            IFilmRepository FilmRepository { get; }
 
-        IHallRepository HallRepository { get; }
+            IHallRepository HallRepository { get; }
 
-        IPlaceRepository PlaceRepository { get; }
+            IPlaceRepository PlaceRepository { get; }
 
-        ITicketRepository TicketRepository { get; }
+            ITicketRepository TicketRepository { get; }
 
-        IVisitorRepository VisitorRepository { get; }
+            IVisitorRepository VisitorRepository { get; }
 
-        ISessionRepository SessionRepository { get; }
+            ISessionRepository SessionRepository { get; }
 
-        Task CommitAsync();
-    }
+            Task CommitAsync();
+        }
 }

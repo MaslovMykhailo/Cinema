@@ -9,9 +9,9 @@ namespace Cinema.Web.Mapping
         private static MapperProfile instance;
         private MapperProfile()
         {
-            CreateMap<FilmModel, Film>();
+            CreateMap<FilmModel, Film>().ReverseMap();
             CreateMap<HallModel, Hall>();
-            CreateMap<TicketModel, Ticket>();
+            CreateMap<TicketModel, Ticket>().ReverseMap();
             CreateMap<SessionModel, Session>();
             CreateMap<VisitorModel, Visitor>();
             CreateMap<PlaceModel, Place>();

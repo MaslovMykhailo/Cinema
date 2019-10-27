@@ -11,6 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
+using ITicketService = Cinema.BusinessLogic.Interfaces.ITicketService;
+using TicketService = Cinema.BusinessLogic.Services.TicketService;
+using CinemaSearcher;
 
 namespace Cinema.Web
 {
@@ -47,6 +51,14 @@ namespace Cinema.Web
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
+            services.AddHttpClient("search", c =>
+            {
+                c.BaseAddress = new Uri("https://localhost:44377/");
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            })
+            .AddTypedClient(c => Refit.RestService.For<ICinemaSearcherClient>(c));
+
+
             var mappingConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(MapperProfile.getInstance());
@@ -56,9 +68,10 @@ namespace Cinema.Web
             services.AddSingleton(mapper);
 
 
-            var connection = Configuration.GetConnectionString("DefaultConnection");
+            var connection = Configuration.GetConnectionString("LocalConnection");
             services.AddDbContext<CinemaContext>(options =>
                 options.UseSqlServer(connection));
+            
 
             services.AddSwaggerGen(c =>
             {
