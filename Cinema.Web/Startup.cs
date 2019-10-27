@@ -4,6 +4,7 @@ using Cinema.BusinessLogic.Services;
 using Cinema.Persisted.Context;
 using Cinema.Persisted.Interfaces;
 using Cinema.Persisted.Repositories;
+using Cinema.Web.Clients;
 using Cinema.Web.Mapping;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,7 +15,6 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using ITicketService = Cinema.BusinessLogic.Interfaces.ITicketService;
 using TicketService = Cinema.BusinessLogic.Services.TicketService;
-using CinemaSearcher;
 
 namespace Cinema.Web
 {
@@ -57,6 +57,13 @@ namespace Cinema.Web
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             })
             .AddTypedClient(c => Refit.RestService.For<ICinemaSearcherClient>(c));
+
+            services.AddHttpClient("explorer", c =>
+            {
+                c.BaseAddress = new Uri("https://localhost:44318/");
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            })
+            .AddTypedClient(c => Refit.RestService.For<ICinemaExplorerClient>(c));
 
 
             var mappingConfig = new MapperConfiguration(mc =>

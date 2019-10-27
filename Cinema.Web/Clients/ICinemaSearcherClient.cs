@@ -3,7 +3,7 @@ using Refit;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CinemaSearcher
+namespace Cinema.Web.Clients
 {
     public interface ICinemaSearcherClient
     {
