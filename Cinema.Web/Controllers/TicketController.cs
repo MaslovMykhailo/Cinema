@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Cinema.BusinessLogic.Interfaces;
-using Cinema.CinemaSearcher.Client;
 using Cinema.Persisted.Entities;
 using Cinema.Web.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -16,15 +15,11 @@ namespace Cinema.Web.Controllers
     {
         private readonly ITicketService _ticketService;
         private readonly IMapper _mapper;
-        private readonly IHttpClientFactory _clientFactory;
-        private readonly ICinemaSearcherClient _cinemaSearcherClient;
 
-        public TicketController(ITicketService ticketService, IMapper mapper, IHttpClientFactory clientFactory, ICinemaSearcherClient cinemaSearcherClient)
+        public TicketController(ITicketService ticketService, IMapper mapper)
         {
             _ticketService = ticketService;
             _mapper = mapper;
-            _clientFactory = clientFactory;
-            _cinemaSearcherClient = cinemaSearcherClient;
         }
 
         /// <summary>
