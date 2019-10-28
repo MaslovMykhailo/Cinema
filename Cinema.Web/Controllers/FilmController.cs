@@ -39,12 +39,28 @@ namespace Cinema.Web.Controllers
         }
 
         /// <summary>
+        /// Get film by id.
+        /// </summary>
+        /// <returns>Film.</returns>
+        /// <response code="404">If film are not found.</response>
+        [HttpGet]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(IActionResult), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var film = await _explorerClient.GetAsync<Film>(id);
+
+            return Ok(film);
+        }
+
+        /// <summary>
         /// Get all films by search query.
         /// </summary>
         /// <returns>All films by search query.</returns>
         /// <response code="404">If films are not found.</response>
         [HttpGet]
-        [Route("/api/film/search")]
+        [Route("search")]
         [ProducesResponseType(typeof(IActionResult), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetAllBySearchQuery([FromQuery] FilmSearchModel filmModel)
@@ -59,13 +75,13 @@ namespace Cinema.Web.Controllers
         /// <returns>Films price list.</returns>
         /// <response code="404">If films are not found.</response>
         [HttpGet]
-        [Route("/api/film/price-list")]
+        [Route("price-list")]
         [ProducesResponseType(typeof(IActionResult), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetPriseList()
         {
-            IEnumerable<Film> films = await _explorerClient.GetAsync<Film>();
-            return Ok(_mapper.Map<List<FilmModel>>(films));
+            IEnumerable<FilmPrice> priceList = await _explorerClient.GetPriceList<FilmPrice>();
+            return Ok(_mapper.Map<List<FilmPrice>>(priceList));
         }
     }
 }
