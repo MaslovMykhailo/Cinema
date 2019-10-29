@@ -13,10 +13,27 @@
             FilmMaker = "";
         }
 
+        public static FilmSearchModel Ensure(FilmSearchModel model)
+        {
+            var ensuredModel = new FilmSearchModel();
+            ensuredModel.Duration = model.Duration;
+
+            if (model.Name != null)
+            {
+                ensuredModel.Name = model.Name;
+            }
+            if (model.FilmMaker != null)
+            {
+                ensuredModel.FilmMaker = model.FilmMaker;
+            }
+
+            return ensuredModel;
+        }
+
         public class DurationFilter
         {
-            public float From { get; set; }
-            public float To { get; set; }
+            public float? From { get; set; }
+            public float? To { get; set; }
 
             public DurationFilter()
             {
@@ -24,5 +41,6 @@
                 To = 0;
             }
         }
+
     }
 }
