@@ -6,6 +6,8 @@ using Cinema.Persisted.Interfaces;
 using Cinema.Persisted.Repositories;
 using Cinema.Web.Clients;
 using Cinema.Web.Mapping;
+using Cinema.Web.Providers.FilmProviders;
+using Cinema.Web.Providers.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +22,6 @@ namespace Cinema.Web
 {
     public class Startup
     {
-        readonly string _allowSpecificOrigins = "_allowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
@@ -30,18 +31,6 @@ namespace Cinema.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy(_allowSpecificOrigins,
-                builder =>
-                {
-                    builder.WithOrigins("http://localhost:4200")
-                    .AllowAnyHeader()
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod();
-                });
-            });
-
             services.AddScoped<IFilmService, FilmService>();
             services.AddScoped<IHallService, HallService>();
             services.AddScoped<IPlaceService, PlaceService>();
@@ -50,6 +39,9 @@ namespace Cinema.Web
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            services.AddScoped<IFilmProvider, FilmProvider>();
+            services.AddScoped<IFilmExplorerProvider, FilmExplorerProvider>();
+            services.AddScoped<IFilmSearcherProvider, FilmSearcherProvider>();
 
             services.AddHttpClient("search", c =>
             {
@@ -78,7 +70,8 @@ namespace Cinema.Web
             var connection = Configuration.GetConnectionString("LocalConnection");
             services.AddDbContext<CinemaContext>(options =>
                 options.UseSqlServer(connection));
-            
+
+            services.AddMemoryCache();            
 
             services.AddSwaggerGen(c =>
             {
@@ -100,7 +93,6 @@ namespace Cinema.Web
             }
 
             app.UseHttpsRedirection();
-            app.UseCors(_allowSpecificOrigins);
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
