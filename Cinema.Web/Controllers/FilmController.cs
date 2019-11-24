@@ -43,7 +43,7 @@ namespace Cinema.Web.Controllers
         [Route("cached-search")]
         [ProducesResponseType(typeof(IActionResult), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetAllBySearchQueryCached([FromQuery] FilmSearchModel filmModel)
+        public async Task<IActionResult> GetAllBySearchQueryCached([FromQuery] PagedFilmSearchModel filmModel)
         {
             var films = _mapper.Map<List<FilmModel>>(await _filmProvider.GetBySearchModelCachedAsync(filmModel));
             return Ok(films);

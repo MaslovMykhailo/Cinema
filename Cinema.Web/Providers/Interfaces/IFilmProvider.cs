@@ -9,6 +9,6 @@ namespace Cinema.Web.Providers.Interfaces
     {
         Task<List<Film>> GetBySearchModelAsync(FilmSearchModel model);
 
-        Task<List<Film>> GetBySearchModelCachedAsync(FilmSearchModel model);
+        Task<List<Film>> GetBySearchModelCachedAsync(PagedFilmSearchModel model);
     }
 }
