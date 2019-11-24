@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace Cinema.Web.Providers.Interfaces
 {
-    public interface IFilmProvider
+    public interface IFilmSearcherProvider
     {
         Task<List<Film>> GetBySearchModelAsync(FilmSearchModel model);
-
-        Task<List<Film>> GetBySearchModelCachedAsync(FilmSearchModel model);
+        Task<List<Film>> GetAllAsync();
     }
 }

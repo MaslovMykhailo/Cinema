@@ -8,7 +8,7 @@ namespace Cinema.Web.Clients
     public interface ICinemaSearcherClient
     {
         [Get("/api/film")]
-        Task<IEnumerable<T>> GetAsync<T>();
+        Task<List<T>> GetAllAsync<T>();
 
         [Get("/api/film/search")]
         Task<IEnumerable<T>> GetBySearchQueryAsync<T>(FilmSearchModel query);

@@ -2,21 +2,28 @@
 {
     public class FilmSearchModel
     {
+        private const int DEFAULT_FILMS_COUNT = 5000;
         public string Name { get; set; }
         public DurationFilter Duration { get; set; }
         public string FilmMaker { get; set; }
+        public int Count { get; set; }
 
         public FilmSearchModel()
         {
-            Name = "";
+            Name = string.Empty;
             Duration = new DurationFilter();
-            FilmMaker = "";
+            FilmMaker = string.Empty;
+            Count = DEFAULT_FILMS_COUNT;
         }
 
         public static FilmSearchModel Ensure(FilmSearchModel model)
         {
             var ensuredModel = new FilmSearchModel();
             ensuredModel.Duration = model.Duration;
+            if(model.Count > 0)
+            {
+                ensuredModel.Count = model.Count;
+            }
 
             if (model.Name != null)
             {
