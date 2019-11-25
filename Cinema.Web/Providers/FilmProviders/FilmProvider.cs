@@ -13,19 +13,19 @@ namespace Cinema.Web.Providers.FilmProviders
 {
     public class FilmProvider : IFilmProvider
     {
+        private static TimeSpan CACHE_UPDATE_TIMEOUT = TimeSpan.FromMinutes(20);
+
         private readonly IFilmSearcherProvider _searchProvider;
         private readonly IFilmExplorerProvider _explorerProvider;
         private readonly IMemoryCache _cache;
-
-        //TODO: Refresh cache with background worker or smth else
-        private readonly BackgroundWorker _backgroundWorker;
 
         public FilmProvider(IFilmSearcherProvider searchProvider, IFilmExplorerProvider explorerProvider, IMemoryCache cache)
         {
             _searchProvider = searchProvider;
             _explorerProvider = explorerProvider;
             _cache = cache;
-            _backgroundWorker = new BackgroundWorker();
+
+            _ = UpdateCacheByTimeout();
         }
 
         public async Task<List<Film>> GetBySearchModelAsync(FilmSearchModel model)
@@ -36,21 +36,40 @@ namespace Cinema.Web.Providers.FilmProviders
             return searcherResult.Concat(explorerResult).ToList();
         }
 
-        public async Task<List<Film>> GetBySearchModelCachedAsync(FilmSearchModel model)
+        private async Task<List<Film>> GetAllAsync()
         {
-            var films = await _cache.GetOrCreateAsync("_Films", async entry =>
+            // run tasks in prallel
+            var results = await Task.WhenAll(_searchProvider.GetAllAsync(), _explorerProvider.GetAllAsync());
+            return results[0].Concat(results[1]).ToList();
+        }
+
+        private async Task<List<Film>> GetAllFromCacheAsync()
+        {
+            return await _cache.GetOrCreateAsync("_Films", async entry =>
             {
-                entry.SetSlidingExpiration(TimeSpan.FromSeconds(90));
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(120);
-                var searcherResult = await _searchProvider.GetAllAsync();
-                var explorerResult = await _explorerProvider.GetAllAsync();
-
-                return searcherResult.Concat(explorerResult).ToList();
+                entry.AbsoluteExpirationRelativeToNow = CACHE_UPDATE_TIMEOUT;
+                return await GetAllAsync();
             });
+        }
 
+        private async Task UpdateCacheByTimeout()
+        {
+            await GetAllFromCacheAsync();
+            await Task.Delay(CACHE_UPDATE_TIMEOUT).ConfigureAwait(false);
+            _ = UpdateCacheByTimeout();
+        }
+
+        public async Task<List<Film>> GetBySearchModelCachedAsync(PagedFilmSearchModel model)
+        {
+            var films = await GetAllFromCacheAsync();
             var filter = new FilmFilterBuilder(FilmSearchModel.Ensure(model)).Build().Compile();
 
-            return films.Where(filter).ToList();
+            return films
+                .Where(filter)
+                .OrderBy(film => film.Name)
+                .Skip(model.Page > 1 ? (model.Page - 1) * PagedFilmSearchModel.PAGE_SIZE : 0)
+                .Take(PagedFilmSearchModel.PAGE_SIZE)
+                .ToList();
         }
     }
 }
