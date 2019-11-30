@@ -38,7 +38,6 @@ namespace Cinema.Web.Providers.FilmProviders
 
         private async Task<List<Film>> GetAllAsync()
         {
-            // run tasks in prallel
             var results = await Task.WhenAll(_searchProvider.GetAllAsync(), _explorerProvider.GetAllAsync());
             return results[0].Concat(results[1]).ToList();
         }
