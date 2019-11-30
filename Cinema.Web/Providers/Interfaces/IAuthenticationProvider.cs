@@ -1,6 +1,5 @@
 ﻿using Cinema.Persisted.Entities;
 using Cinema.Web.Models;
-using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 
 namespace Cinema.Web.Providers.Interfaces
