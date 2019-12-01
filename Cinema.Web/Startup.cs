@@ -10,6 +10,7 @@ using Cinema.Web.Mapping;
 using Cinema.Web.Providers.Authentication;
 using Cinema.Web.Providers.FilmProviders;
 using Cinema.Web.Providers.Interfaces;
+using Cinema.Web.Providers.Reservation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,7 @@ namespace Cinema.Web
             services.AddScoped<IFilmExplorerProvider, FilmExplorerProvider>();
             services.AddScoped<IFilmSearcherProvider, FilmSearcherProvider>();
             services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
+            services.AddScoped<IReservationProvider, ReservationProvider>();
 
             services.AddHttpClient("search", c =>
             {
@@ -66,6 +68,13 @@ namespace Cinema.Web
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             })
             .AddTypedClient(c => Refit.RestService.For<IAuthenticationClient>(c));
+
+            services.AddHttpClient("reservation", c =>
+            {
+                c.BaseAddress = new Uri("https://localhost:44329/");
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            })
+            .AddTypedClient(c => Refit.RestService.For<IReservationClient>(c));
 
             var mappingConfig = new MapperConfiguration(mc =>
             {
