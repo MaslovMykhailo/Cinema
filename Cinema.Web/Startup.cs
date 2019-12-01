@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using AspNet.Security.OAuth.Validation;
+using AutoMapper;
 using Cinema.BusinessLogic.Interfaces;
 using Cinema.BusinessLogic.Services;
 using Cinema.Persisted.Context;
@@ -6,6 +7,7 @@ using Cinema.Persisted.Interfaces;
 using Cinema.Persisted.Repositories;
 using Cinema.Web.Clients;
 using Cinema.Web.Mapping;
+using Cinema.Web.Providers.Authentication;
 using Cinema.Web.Providers.FilmProviders;
 using Cinema.Web.Providers.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -42,6 +44,7 @@ namespace Cinema.Web
             services.AddScoped<IFilmProvider, FilmProvider>();
             services.AddScoped<IFilmExplorerProvider, FilmExplorerProvider>();
             services.AddScoped<IFilmSearcherProvider, FilmSearcherProvider>();
+            services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
 
             services.AddHttpClient("search", c =>
             {
@@ -57,6 +60,12 @@ namespace Cinema.Web
             })
             .AddTypedClient(c => Refit.RestService.For<ICinemaExplorerClient>(c));
 
+            services.AddHttpClient("authentication", c =>
+            {
+                c.BaseAddress = new Uri("https://localhost:44328/");
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            })
+            .AddTypedClient(c => Refit.RestService.For<IAuthenticationClient>(c));
 
             var mappingConfig = new MapperConfiguration(mc =>
             {
@@ -71,7 +80,9 @@ namespace Cinema.Web
             services.AddDbContext<CinemaContext>(options =>
                 options.UseSqlServer(connection));
 
-            services.AddMemoryCache();            
+            services.AddMemoryCache();
+            services.AddAuthentication(OAuthValidationDefaults.AuthenticationScheme)
+                .AddOAuthValidation();
 
             services.AddSwaggerGen(c =>
             {

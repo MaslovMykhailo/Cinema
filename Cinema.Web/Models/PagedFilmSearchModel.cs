@@ -7,7 +7,7 @@ namespace Cinema.Web.Models
 {
     public class PagedFilmSearchModel : FilmSearchModel
     {
-        public static readonly int PAGE_SIZE = 10;  
+        public static readonly int PAGE_SIZE = 1000;  
 
         public int Page { get; set; }
     }
