@@ -86,7 +86,6 @@ namespace Cinema.Web
                 options.UseSqlServer(connection));
 
             services.AddMemoryCache();
-
             //Jwt token settings
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);

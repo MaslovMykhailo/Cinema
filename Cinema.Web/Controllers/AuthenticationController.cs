@@ -54,7 +54,6 @@ namespace Cinema.Web.Controllers
         [Route("SignOut")]
         public async Task<IActionResult> SignOut()
         {
-            var r = Request;
             await _authenticationProvider.SignOutAsync();
 
             return Ok();
