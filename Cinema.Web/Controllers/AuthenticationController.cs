@@ -54,13 +54,13 @@ namespace Cinema.Web.Controllers
         [Route("SignOut")]
         public async Task<IActionResult> SignOut()
         {
+            var r = Request;
             await _authenticationProvider.SignOutAsync();
 
             return Ok();
         }
 
-        //[Authorize(Roles = "Admin")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("GiveAdminRole")]
         public async Task<IActionResult> GiveAdminRole([FromQuery]string userId)
@@ -70,8 +70,7 @@ namespace Cinema.Web.Controllers
             return Ok();
         }
 
-        //[Authorize(Roles = "Admin")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("CreateRole")]
         public async Task<IActionResult> CreateRole([FromQuery]string name)
