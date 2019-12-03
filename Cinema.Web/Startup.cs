@@ -1,4 +1,4 @@
-﻿using AspNet.Security.OAuth.Validation;
+using AspNet.Security.OAuth.Validation;
 using AutoMapper;
 using Cinema.BusinessLogic.Interfaces;
 using Cinema.BusinessLogic.Services;
@@ -50,6 +50,7 @@ namespace Cinema.Web
             services.AddScoped<IFilmExplorerProvider, FilmExplorerProvider>();
             services.AddScoped<IFilmSearcherProvider, FilmSearcherProvider>();
             services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
+           services.AddScoped<IReservationProvider, ReservationProvider>();
 
             services.AddHttpClient("search", c =>
             {
@@ -71,6 +72,13 @@ namespace Cinema.Web
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             })
             .AddTypedClient(c => Refit.RestService.For<IAuthenticationClient>(c));
+
+            services.AddHttpClient("reservation", c =>
+            {
+                c.BaseAddress = new Uri("https://localhost:44329/");
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            })
+            .AddTypedClient(c => Refit.RestService.For<IReservationClient>(c));
 
             var mappingConfig = new MapperConfiguration(mc =>
             {
