@@ -117,7 +117,7 @@ namespace Cinema.Web
             services.AddSingleton(mapper);
 
 
-            var connection = Configuration.GetConnectionString("DefaultConnection");
+            var connection = Configuration.GetConnectionString("LocalConnection");
             services.AddDbContext<CinemaContext>(options =>
                 options.UseSqlServer(connection));
 
