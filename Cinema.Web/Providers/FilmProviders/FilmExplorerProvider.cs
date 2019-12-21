@@ -32,16 +32,30 @@ namespace Cinema.Web.Providers.FilmProviders
 
         public async Task<List<Film>> GetBySearchModelAsync(FilmSearchModel model)
         {
-            var filmIds = await GetFilmIdsAsync();
-            var films = await GetFilmByIdsAsync(filmIds);
-            var filter = new FilmFilterBuilder(FilmSearchModel.Ensure(model)).Build().Compile();
+            try
+            {
+                var filmIds = await GetFilmIdsAsync();
+                var films = await GetFilmByIdsAsync(filmIds);
+                var filter = new FilmFilterBuilder(FilmSearchModel.Ensure(model)).Build().Compile();
 
-            return films.Where(filter).ToList();
+                return films.Where(filter).ToList();
+            }
+            catch
+            {
+                return new List<Film>();
+            }
         }
 
         public async Task<List<Film>> GetAllAsync()
         {
-            return await _explorerClient.GetAllAsync<Film>();
+            try
+            {
+                return await _explorerClient.GetAllAsync<Film>();
+            }
+            catch
+            {
+                return new List<Film>();
+            }
         }
     }
 }

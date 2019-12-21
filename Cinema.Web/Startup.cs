@@ -1,4 +1,3 @@
-using AspNet.Security.OAuth.Validation;
 using AutoMapper;
 using Cinema.BusinessLogic.Interfaces;
 using Cinema.BusinessLogic.Services;
@@ -11,6 +10,7 @@ using Cinema.Web.Models;
 using Cinema.Web.Providers.Authentication;
 using Cinema.Web.Providers.FilmProviders;
 using Cinema.Web.Providers.Interfaces;
+using Cinema.Web.Providers.Reservation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,9 +18,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Polly;
+using Polly.Extensions.Http;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using ITicketService = Cinema.BusinessLogic.Interfaces.ITicketService;
 using TicketService = Cinema.BusinessLogic.Services.TicketService;
@@ -34,6 +37,25 @@ namespace Cinema.Web
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+        }
+
+        static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            // The policy is configured to try five times with an exponential retry, starting at two seconds
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+        }
+
+        static IAsyncPolicy<HttpResponseMessage> GetFallbackPolicy()
+        {
+            HttpResponseMessage fallback = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+            fallback.Content = new StringContent("{}");
+
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .FallbackAsync(fallback);
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -50,21 +72,27 @@ namespace Cinema.Web
             services.AddScoped<IFilmExplorerProvider, FilmExplorerProvider>();
             services.AddScoped<IFilmSearcherProvider, FilmSearcherProvider>();
             services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
-           services.AddScoped<IReservationProvider, ReservationProvider>();
+            services.AddScoped<IReservationProvider, ReservationProvider>();
 
             services.AddHttpClient("search", c =>
             {
                 c.BaseAddress = new Uri("https://localhost:44377/");
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             })
-            .AddTypedClient(c => Refit.RestService.For<ICinemaSearcherClient>(c));
+            .AddTypedClient(c => Refit.RestService.For<ICinemaSearcherClient>(c))
+            .SetHandlerLifetime(TimeSpan.FromMinutes(1))
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetFallbackPolicy());
 
             services.AddHttpClient("explorer", c =>
             {
                 c.BaseAddress = new Uri("https://localhost:44318/");
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             })
-            .AddTypedClient(c => Refit.RestService.For<ICinemaExplorerClient>(c));
+            .AddTypedClient(c => Refit.RestService.For<ICinemaExplorerClient>(c))
+            .SetHandlerLifetime(TimeSpan.FromMinutes(1))
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetFallbackPolicy());
 
             services.AddHttpClient("authentication", c =>
             {
@@ -89,7 +117,7 @@ namespace Cinema.Web
             services.AddSingleton(mapper);
 
 
-            var connection = Configuration.GetConnectionString("LocalConnection");
+            var connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<CinemaContext>(options =>
                 options.UseSqlServer(connection));
 
