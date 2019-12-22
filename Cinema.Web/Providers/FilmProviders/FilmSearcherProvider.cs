@@ -18,12 +18,26 @@ namespace Cinema.Web.Providers.FilmProviders
 
         public async Task<List<Film>> GetAllAsync()
         {
-            return (await _searcherClient.GetAllAsync<Film>()).ToList();
+            try
+            {
+                return (await _searcherClient.GetAllAsync<Film>()).ToList();
+            }
+            catch 
+            {
+                return new List<Film>();
+            }
         }
 
         public async Task<List<Film>> GetBySearchModelAsync(FilmSearchModel model)
         {
-            return (await _searcherClient.GetBySearchQueryAsync<Film>(model)).ToList();
+            try
+            {
+                return (await _searcherClient.GetBySearchQueryAsync<Film>(model)).ToList();
+            }
+            catch
+            {
+                return new List<Film>();
+            }
         }
     }
 }
